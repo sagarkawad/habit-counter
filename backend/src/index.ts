@@ -13,9 +13,9 @@ async function insertUser(username: string, email: string, password: string) {
 }
 
 async function insertCheatMeal(date: string, isCheat: boolean, userId: number) {
-  const response = await prisma.user.create({
+  const response = await prisma.cheatMeal.create({
     data: {
-      date,
+      date: new Date(date),
       isCheat,
       userId,
     },
@@ -23,4 +23,4 @@ async function insertCheatMeal(date: string, isCheat: boolean, userId: number) {
 }
 
 // insertUser("sag", "spk21@gmail.com", "123456");
-insertCheatMeal("2024-06-13 15:30:00", true, 1);
+insertCheatMeal("2024-06-13T16:30:00", true, 1);

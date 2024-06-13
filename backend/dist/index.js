@@ -23,4 +23,16 @@ function insertUser(username, email, password) {
         console.log(user);
     });
 }
-insertUser("sag", "spk21@gmail.com", "123456");
+function insertCheatMeal(date, isCheat, userId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield prisma.cheatMeal.create({
+            data: {
+                date: new Date(date),
+                isCheat,
+                userId,
+            },
+        });
+    });
+}
+// insertUser("sag", "spk21@gmail.com", "123456");
+insertCheatMeal("2024-06-13T16:30:00", true, 1);
