@@ -38,11 +38,27 @@ function hashPassword(plainPassword) {
         }
     });
 }
+// Example function to check passwords
+function checkPassword(inputPassword, storedHashedPassword) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!storedHashedPassword) {
+            console.error("Stored hashed password is undefined.");
+            return false;
+        }
+        try {
+            const match = yield bcrypt_1.default.compare(inputPassword, storedHashedPassword);
+            return match;
+        }
+        catch (error) {
+            console.error("Error comparing passwords:", error);
+            throw error;
+        }
+    });
+}
 app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const username = req.body.username;
     const email = req.body.email;
     const password = yield hashPassword(req.body.password);
-    const token = jsonwebtoken_1.default.sign(email, JWT_SECRET);
     //   console.log(email, password, token);
     try {
         const response = yield prisma.user.create({
@@ -52,7 +68,37 @@ app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 password,
             },
         });
-        res.json({ token: token });
+        res.json({ msg: "user successfully created" });
+    }
+    catch (err) {
+        res.json({ msg: err });
+    }
+}));
+app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const username = req.body.username;
+    const password = req.body.password;
+    try {
+        const response = yield prisma.user.findFirst({
+            where: {
+                OR: [
+                    {
+                        username: username,
+                    },
+                    {
+                        email: username,
+                    },
+                ],
+            },
+        });
+        // console.log(password, response?.password);
+        const passResponse = yield checkPassword(password, response === null || response === void 0 ? void 0 : response.password);
+        if (passResponse) {
+            const token = jsonwebtoken_1.default.sign(username, JWT_SECRET);
+            res.json({ token });
+        }
+        else {
+            res.json({ msg: "incorrect password" });
+        }
     }
     catch (err) {
         res.json({ msg: err });

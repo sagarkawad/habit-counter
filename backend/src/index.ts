@@ -25,11 +25,30 @@ async function hashPassword(plainPassword: string): Promise<string> {
   }
 }
 
+// Example function to check passwords
+async function checkPassword(
+  inputPassword: string,
+  storedHashedPassword: string | undefined
+): Promise<boolean | void> {
+  if (!storedHashedPassword) {
+    console.error("Stored hashed password is undefined.");
+    return false;
+  }
+
+  try {
+    const match = await bcrypt.compare(inputPassword, storedHashedPassword);
+    return match;
+  } catch (error) {
+    console.error("Error comparing passwords:", error);
+    throw error;
+  }
+}
+
 app.post("/register", async (req: Request, res: Response) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = await hashPassword(req.body.password);
-  const token = jwt.sign(username, JWT_SECRET);
+
   //   console.log(email, password, token);
   try {
     const response = await prisma.user.create({
@@ -39,7 +58,7 @@ app.post("/register", async (req: Request, res: Response) => {
         password,
       },
     });
-    res.json({ token: token });
+    res.json({ msg: "user successfully created" });
   } catch (err) {
     res.json({ msg: err });
   }
@@ -48,6 +67,32 @@ app.post("/register", async (req: Request, res: Response) => {
 app.post("/login", async (req: Request, res: Response) => {
   const username = req.body.username;
   const password = req.body.password;
+
+  try {
+    const response = await prisma.user.findFirst({
+      where: {
+        OR: [
+          {
+            username: username,
+          },
+          {
+            email: username,
+          },
+        ],
+      },
+    });
+    // console.log(password, response?.password);
+
+    const passResponse = await checkPassword(password, response?.password);
+    if (passResponse) {
+      const token = jwt.sign(username, JWT_SECRET);
+      res.json({ token });
+    } else {
+      res.json({ msg: "incorrect password" });
+    }
+  } catch (err) {
+    res.json({ msg: err });
+  }
 });
 
 app.listen(3000, () => console.log("server up and running on port 3000"));
