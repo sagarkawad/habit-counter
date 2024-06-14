@@ -2,6 +2,9 @@ import express, { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import cors from "cors";
 import bcrypt from "bcrypt";
+import extractToken from "./middlewares/extractToken";
+import verifyToken from "./middlewares/verifyToken";
+
 const app = express();
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
@@ -81,7 +84,11 @@ app.post("/login", async (req: Request, res: Response) => {
         ],
       },
     });
-    // console.log(password, response?.password);
+
+    if (!response) {
+      res.json({ msg: "user does not exists" });
+      return;
+    }
 
     const passResponse = await checkPassword(password, response?.password);
     if (passResponse) {
@@ -95,42 +102,38 @@ app.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-function extractToken(req: Request, res: Response, next: NextFunction) {
-  const authHeader = req.headers.authorization;
-
-  if (authHeader) {
-    const token = authHeader.split(" ")[1]; // Assuming the token is sent as "Bearer <token>"
-    if (token) {
-      req.token = token; // Attach the token to the request object for further use
-    } else {
-      return res.status(401).json({ message: "Token is missing" });
-    }
-  } else {
-    return res.status(401).json({ message: "Authorization header is missing" });
-  }
-
-  next();
-}
-
-declare global {
-  namespace Express {
-    interface Request {
-      token?: string;
-    }
-  }
-}
-
 app.use(extractToken);
+app.use(verifyToken);
 
-app.post("/add", async (req, res) => {
-  if (!req.token) {
-    res.json({ msg: "no token found!" });
+app.post("/add", async (req: Request, res: Response) => {
+  //   if (!req.token) {
+  //     res.json({ msg: "no token found!" });
+  //   }
+
+  const user = await prisma.user.findFirst({
+    where: {
+      username: req.user,
+    },
+  });
+
+  if (!user) {
+    res.json({ msg: "user does not exists" });
+    return;
   }
-  prisma.cheatMeal.create({
-    data: {
-        
-    }
-  })
+
+  try {
+    const response = await prisma.cheatMeal.create({
+      data: {
+        title: req.body.title,
+        isCheat: req.body.isCheat,
+        userId: user.id,
+        date: new Date(req.body.date),
+      },
+    });
+    res.json({ msg: response });
+  } catch (err) {
+    res.json({ msg: err });
+  }
 });
 
 app.listen(3000, () => console.log("server up and running on port 3000"));

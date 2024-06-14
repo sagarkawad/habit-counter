@@ -16,6 +16,8 @@ const express_1 = __importDefault(require("express"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const cors_1 = __importDefault(require("cors"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const extractToken_1 = __importDefault(require("./middlewares/extractToken"));
+const verifyToken_1 = __importDefault(require("./middlewares/verifyToken"));
 const app = (0, express_1.default)();
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
@@ -90,7 +92,10 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 ],
             },
         });
-        // console.log(password, response?.password);
+        if (!response) {
+            res.json({ msg: "user does not exists" });
+            return;
+        }
         const passResponse = yield checkPassword(password, response === null || response === void 0 ? void 0 : response.password);
         if (passResponse) {
             const token = jsonwebtoken_1.default.sign(username, JWT_SECRET);
@@ -99,6 +104,36 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         else {
             res.json({ msg: "incorrect password" });
         }
+    }
+    catch (err) {
+        res.json({ msg: err });
+    }
+}));
+app.use(extractToken_1.default);
+app.use(verifyToken_1.default);
+app.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //   if (!req.token) {
+    //     res.json({ msg: "no token found!" });
+    //   }
+    const user = yield prisma.user.findFirst({
+        where: {
+            username: req.user,
+        },
+    });
+    if (!user) {
+        res.json({ msg: "user does not exists" });
+        return;
+    }
+    try {
+        const response = yield prisma.cheatMeal.create({
+            data: {
+                title: req.body.title,
+                isCheat: req.body.isCheat,
+                userId: user.id,
+                date: new Date(req.body.date),
+            },
+        });
+        res.json({ msg: response });
     }
     catch (err) {
         res.json({ msg: err });
