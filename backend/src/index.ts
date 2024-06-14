@@ -158,6 +158,25 @@ app.post("/edit", async (req, res) => {
   }
 });
 
+app.post("/delete", async (req, res) => {
+  const user = await prisma.user.findFirst({
+    where: {
+      username: req.user,
+    },
+  });
+
+  try {
+    const response = await prisma.cheatMeal.delete({
+      where: {
+        id: req.body.id,
+      },
+    });
+    res.json({ msg: response });
+  } catch (err) {
+    res.json({ msg: err });
+  }
+});
+
 app.listen(3000, () => console.log("server up and running on port 3000"));
 
 // async function insertUser(username: string, email: string, password: string) {

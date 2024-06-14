@@ -160,6 +160,24 @@ app.post("/edit", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json({ msg: err });
     }
 }));
+app.post("/delete", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield prisma.user.findFirst({
+        where: {
+            username: req.user,
+        },
+    });
+    try {
+        const response = yield prisma.cheatMeal.delete({
+            where: {
+                id: req.body.id,
+            },
+        });
+        res.json({ msg: response });
+    }
+    catch (err) {
+        res.json({ msg: err });
+    }
+}));
 app.listen(3000, () => console.log("server up and running on port 3000"));
 // async function insertUser(username: string, email: string, password: string) {
 //   const user = await prisma.user.create({
