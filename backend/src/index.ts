@@ -12,7 +12,7 @@ app.use(express.json());
 const JWT_SECRET = "secret";
 
 // Function to hash a password
-async function hashPassword(plainPassword: string) {
+async function hashPassword(plainPassword: string): Promise<string> {
   try {
     // Generate a salt
     const salt = await bcrypt.genSalt(10);
@@ -21,16 +21,33 @@ async function hashPassword(plainPassword: string) {
     return hashedPassword;
   } catch (err) {
     console.error("Error hashing password:", err);
+    throw err;
   }
 }
 
 app.post("/register", async (req: Request, res: Response) => {
+  const username = req.body.username;
   const email = req.body.email;
   const password = await hashPassword(req.body.password);
   const token = jwt.sign(email, JWT_SECRET);
-  console.log(email, password, token);
-  res.json({ token: token });
-  
+  //   console.log(email, password, token);
+  try {
+    const response = await prisma.user.create({
+      data: {
+        username,
+        email,
+        password,
+      },
+    });
+    res.json({ token: token });
+  } catch (err) {
+    res.json({ msg: err });
+  }
+});
+
+app.post("/login", async (req: Request, res: Response) => {
+  const username = req.body.username;
+  const password = req.body.password;
 });
 
 app.listen(3000, () => console.log("server up and running on port 3000"));

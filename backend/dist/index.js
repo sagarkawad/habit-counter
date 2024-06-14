@@ -34,15 +34,29 @@ function hashPassword(plainPassword) {
         }
         catch (err) {
             console.error("Error hashing password:", err);
+            throw err;
         }
     });
 }
 app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const username = req.body.username;
     const email = req.body.email;
     const password = yield hashPassword(req.body.password);
     const token = jsonwebtoken_1.default.sign(email, JWT_SECRET);
-    console.log(email, password, token);
-    res.json({ token: token });
+    //   console.log(email, password, token);
+    try {
+        const response = yield prisma.user.create({
+            data: {
+                username,
+                email,
+                password,
+            },
+        });
+        res.json({ token: token });
+    }
+    catch (err) {
+        res.json({ msg: err });
+    }
 }));
 app.listen(3000, () => console.log("server up and running on port 3000"));
 // async function insertUser(username: string, email: string, password: string) {
