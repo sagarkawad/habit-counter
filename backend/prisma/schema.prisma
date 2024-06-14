@@ -23,6 +23,7 @@ model User {
 
 model CheatMeal {
   id      Int     @id @default(autoincrement())
+  title   String
   date    DateTime
   isCheat Boolean
   userId  Int

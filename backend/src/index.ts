@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import cors from "cors";
 import bcrypt from "bcrypt";
@@ -93,6 +93,44 @@ app.post("/login", async (req: Request, res: Response) => {
   } catch (err) {
     res.json({ msg: err });
   }
+});
+
+function extractToken(req: Request, res: Response, next: NextFunction) {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader) {
+    const token = authHeader.split(" ")[1]; // Assuming the token is sent as "Bearer <token>"
+    if (token) {
+      req.token = token; // Attach the token to the request object for further use
+    } else {
+      return res.status(401).json({ message: "Token is missing" });
+    }
+  } else {
+    return res.status(401).json({ message: "Authorization header is missing" });
+  }
+
+  next();
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      token?: string;
+    }
+  }
+}
+
+app.use(extractToken);
+
+app.post("/add", async (req, res) => {
+  if (!req.token) {
+    res.json({ msg: "no token found!" });
+  }
+  prisma.cheatMeal.create({
+    data: {
+        
+    }
+  })
 });
 
 app.listen(3000, () => console.log("server up and running on port 3000"));
