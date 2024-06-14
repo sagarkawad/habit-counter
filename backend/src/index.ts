@@ -29,7 +29,7 @@ app.post("/register", async (req: Request, res: Response) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = await hashPassword(req.body.password);
-  const token = jwt.sign(email, JWT_SECRET);
+  const token = jwt.sign(username, JWT_SECRET);
   //   console.log(email, password, token);
   try {
     const response = await prisma.user.create({
