@@ -61,7 +61,7 @@ app.post("/register", async (req: Request, res: Response) => {
         password,
       },
     });
-    res.json({ msg: "user successfully created" });
+    res.status(201).json({ msg: "user successfully created" });
   } catch (err) {
     res.status(500).json({ msg: err });
   }

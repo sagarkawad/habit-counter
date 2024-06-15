@@ -70,10 +70,10 @@ app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 password,
             },
         });
-        res.json({ msg: "user successfully created" });
+        res.status(201).json({ msg: "user successfully created" });
     }
     catch (err) {
-        res.json({ msg: err });
+        res.status(500).json({ msg: err });
     }
 }));
 app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
