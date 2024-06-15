@@ -4,6 +4,7 @@ import cors from "cors";
 import bcrypt from "bcrypt";
 import extractToken from "./middlewares/extractToken";
 import verifyToken from "./middlewares/verifyToken";
+import checkUser from "./middlewares/checkUser";
 
 const app = express();
 import { PrismaClient } from "@prisma/client";
@@ -47,7 +48,7 @@ async function checkPassword(
   }
 }
 
-app.post("/register", async (req: Request, res: Response) => {
+app.post("/register", checkUser, async (req: Request, res: Response) => {
   const username = req.body.username;
   const email = req.body.email;
   const password = await hashPassword(req.body.password);
