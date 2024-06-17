@@ -87,7 +87,7 @@ app.post("/login", async (req: Request, res: Response) => {
     });
 
     if (!response) {
-      res.json({ msg: "user does not exists" });
+      res.status(500).json({ msg: "user does not exists" });
       return;
     }
 
