@@ -46,3 +46,8 @@ export const CurrentUserName = selector({
     }
   },
 });
+
+export const SelectDate = atom<Date | undefined>({
+  key: "SelectDate",
+  default: new Date(),
+});
