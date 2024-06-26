@@ -1,4 +1,5 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
+import axios from "axios";
 
 //atom
 export const UserDetails = atom({
@@ -14,4 +15,34 @@ export const UserDetailsLogin = atom({
 export const UserToken = atom({
   key: "UserToken",
   default: localStorage.getItem("authToken"),
+});
+
+interface User {
+  data: {
+    user: {
+      username: string;
+      email: string;
+    };
+  };
+  // add other properties as needed
+}
+
+export const CurrentUserName = selector({
+  key: "CurrentUserName",
+  get: async () => {
+    try {
+      const response: User = await axios.post(
+        "http://localhost:3000/me",
+        null,
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      return response.data.user;
+    } catch (error) {
+      throw error; // Optionally, handle the error in a way that suits your application
+    }
+  },
 });

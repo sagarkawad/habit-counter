@@ -12,6 +12,7 @@ const verifyToken = (req, res, next) => {
     try {
         const decoded = jsonwebtoken_1.default.verify(req.token, "secret");
         req.user = decoded; // Attach the decoded token to the request object
+        console.log(decoded);
         next();
     }
     catch (error) {

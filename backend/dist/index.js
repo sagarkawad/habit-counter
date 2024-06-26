@@ -110,9 +110,10 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             res.status(500).json({ msg: "user does not exists" });
             return;
         }
+        console.log(response);
         const passResponse = yield checkPassword(password, response === null || response === void 0 ? void 0 : response.password);
         if (passResponse) {
-            const token = jsonwebtoken_1.default.sign(username, JWT_SECRET);
+            const token = jsonwebtoken_1.default.sign({ username: response.username, email: response.email }, JWT_SECRET);
             res.json({ token });
         }
         else {
@@ -125,6 +126,9 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 }));
 app.use(extractToken_1.default);
 app.use(verifyToken_1.default);
+app.post("/me", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.json({ user: req.user });
+}));
 app.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //   if (!req.token) {
     //     res.json({ msg: "no token found!" });

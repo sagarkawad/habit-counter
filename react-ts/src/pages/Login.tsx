@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,7 @@ import axios from "axios";
 
 //import
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { UserDetailsLogin, UserToken } from "@/atoms/atoms";
 
 const Login = () => {
@@ -14,10 +14,13 @@ const Login = () => {
   const [token, setToken] = useRecoilState(UserToken);
   const navigate = useNavigate();
 
-  if (token) {
-    alert("You are already logged in!");
-    navigate("/");
-  }
+  useEffect(() => {
+    if (token) {
+      console.log("you are already logged in");
+      alert("you are already logged in");
+      navigate("/");
+    }
+  }, []);
 
   async function setUserLoginHandler() {
     try {

@@ -2,9 +2,11 @@ import express, { Request, Response, NextFunction } from "express";
 
 const extractToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
+  console.log(authHeader);
 
   if (authHeader) {
     const token = authHeader.split(" ")[1]; // Assuming the token is sent as "Bearer <token>"
+
     if (token) {
       req.token = token; // Attach the token to the request object for further use
     } else {

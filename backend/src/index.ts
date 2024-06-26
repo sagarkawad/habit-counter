@@ -105,9 +105,18 @@ app.post("/login", async (req: Request, res: Response) => {
       return;
     }
 
+    console.log(response);
+
     const passResponse = await checkPassword(password, response?.password);
     if (passResponse) {
-      const token = jwt.sign(username, JWT_SECRET);
+      interface User {
+        username: string;
+        email: string;
+      }
+      const token = jwt.sign(
+        { username: response.username, email: response.email },
+        JWT_SECRET
+      );
       res.json({ token });
     } else {
       res.json({ msg: "incorrect password" });
@@ -119,6 +128,10 @@ app.post("/login", async (req: Request, res: Response) => {
 
 app.use(extractToken);
 app.use(verifyToken);
+
+app.post("/me", async (req: Request, res: Response) => {
+  res.json({ user: req.user });
+});
 
 app.post("/add", async (req: Request, res: Response) => {
   //   if (!req.token) {

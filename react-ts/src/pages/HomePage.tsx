@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Navigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { UserToken } from "@/atoms/atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { UserToken, CurrentUserName } from "@/atoms/atoms";
 
 const HomePage = () => {
   const [token, setToken] = useRecoilState(UserToken);
+  const currentUser = useRecoilValue(CurrentUserName);
 
-  if (token) {
+  if (!token) {
     return <Navigate to="/login" />;
   }
 
@@ -18,6 +19,9 @@ const HomePage = () => {
 
   return (
     <div>
+      <h1>
+        <b>Welcome back, {currentUser.username}</b>
+      </h1>
       <Calendar />
       <Button>Add a meal</Button>
       <Button onClick={signOutHandler}>Sign Out</Button>
