@@ -10,3 +10,8 @@ export const UserDetailsLogin = atom({
   key: "UserDetailsLogin",
   default: { username: "", password: "" },
 });
+
+export const UserToken = atom({
+  key: "UserToken",
+  default: localStorage.getItem("authToken"),
+});

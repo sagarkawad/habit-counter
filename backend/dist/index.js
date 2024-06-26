@@ -25,6 +25,19 @@ const prisma = new client_1.PrismaClient();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 const JWT_SECRET = "secret";
+// Function to check if Prisma Client is initialized correctly
+const checkPrismaConnection = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Perform a simple query to check the connection
+        yield prisma.$connect();
+        console.log("Prisma Client initialized successfully.");
+    }
+    catch (error) {
+        console.error("Error initializing Prisma Client:", error);
+    }
+});
+// Call the function to check the connection
+checkPrismaConnection();
 // Function to hash a password
 function hashPassword(plainPassword) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -94,7 +107,7 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             },
         });
         if (!response) {
-            res.json({ msg: "user does not exists" });
+            res.status(500).json({ msg: "user does not exists" });
             return;
         }
         const passResponse = yield checkPassword(password, response === null || response === void 0 ? void 0 : response.password);

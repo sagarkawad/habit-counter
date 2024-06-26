@@ -15,6 +15,20 @@ app.use(express.json());
 
 const JWT_SECRET = "secret";
 
+// Function to check if Prisma Client is initialized correctly
+const checkPrismaConnection = async () => {
+  try {
+    // Perform a simple query to check the connection
+    await prisma.$connect();
+    console.log("Prisma Client initialized successfully.");
+  } catch (error) {
+    console.error("Error initializing Prisma Client:", error);
+  }
+};
+
+// Call the function to check the connection
+checkPrismaConnection();
+
 // Function to hash a password
 async function hashPassword(plainPassword: string): Promise<string> {
   try {

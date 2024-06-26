@@ -6,12 +6,18 @@ import axios from "axios";
 
 //import
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { UserDetailsLogin } from "@/atoms/atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { UserDetailsLogin, UserToken } from "@/atoms/atoms";
 
 const Login = () => {
   const [userLogin, setUserLogin] = useRecoilState(UserDetailsLogin);
+  const [token, setToken] = useRecoilState(UserToken);
   const navigate = useNavigate();
+
+  if (token) {
+    alert("You are already logged in!");
+    navigate("/");
+  }
 
   async function setUserLoginHandler() {
     try {
@@ -22,6 +28,7 @@ const Login = () => {
       console.log(response);
       console.log(response.data.token);
       localStorage.setItem("authToken", response.data.token);
+      setToken(response.data.token);
       navigate("/");
     } catch (err) {
       console.log("err: ", err);
