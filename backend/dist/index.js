@@ -19,6 +19,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const extractToken_1 = __importDefault(require("./middlewares/extractToken"));
 const verifyToken_1 = __importDefault(require("./middlewares/verifyToken"));
 const checkUser_1 = __importDefault(require("./middlewares/checkUser"));
+const verifyCredentials_1 = __importDefault(require("./middlewares/verifyCredentials"));
 const app = (0, express_1.default)();
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
@@ -71,7 +72,7 @@ function checkPassword(inputPassword, storedHashedPassword) {
         }
     });
 }
-app.post("/register", checkUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.post("/register", verifyCredentials_1.default, checkUser_1.default, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const username = req.body.username;
     const email = req.body.email;
     const password = yield hashPassword(req.body.password);

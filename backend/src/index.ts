@@ -5,8 +5,11 @@ import bcrypt from "bcrypt";
 import extractToken from "./middlewares/extractToken";
 import verifyToken from "./middlewares/verifyToken";
 import checkUser from "./middlewares/checkUser";
+import verifyCredentials from "./middlewares/verifyCredentials";
+import { z } from "zod";
 
 const app = express();
+
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
@@ -62,25 +65,30 @@ async function checkPassword(
   }
 }
 
-app.post("/register", checkUser, async (req: Request, res: Response) => {
-  const username = req.body.username;
-  const email = req.body.email;
-  const password = await hashPassword(req.body.password);
+app.post(
+  "/register",
+  verifyCredentials,
+  checkUser,
+  async (req: Request, res: Response) => {
+    const username = req.body.username;
+    const email = req.body.email;
+    const password = await hashPassword(req.body.password);
 
-  //   console.log(email, password, token);
-  try {
-    const response = await prisma.user.create({
-      data: {
-        username,
-        email,
-        password,
-      },
-    });
-    res.status(201).json({ msg: "user successfully created" });
-  } catch (err) {
-    res.status(500).json({ msg: err });
+    //   console.log(email, password, token);
+    try {
+      const response = await prisma.user.create({
+        data: {
+          username,
+          email,
+          password,
+        },
+      });
+      res.status(201).json({ msg: "user successfully created" });
+    } catch (err) {
+      res.status(500).json({ msg: err });
+    }
   }
-});
+);
 
 app.post("/login", async (req: Request, res: Response) => {
   const username = req.body.username;
