@@ -51,3 +51,8 @@ export const SelectDate = atom<Date | undefined>({
   key: "SelectDate",
   default: new Date(),
 });
+
+export const SelectedMeal = atom({
+  key: "SelectedMeal",
+  default: "Select a Meal",
+});
