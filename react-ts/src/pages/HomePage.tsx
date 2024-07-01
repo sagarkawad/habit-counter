@@ -2,7 +2,12 @@ import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { UserToken, CurrentUserName, SelectDate } from "@/atoms/atoms";
+import {
+  UserToken,
+  CurrentUserName,
+  SelectDate,
+  CurrentUserMeals,
+} from "@/atoms/atoms";
 import { Calendar } from "@/components/ui/calendar";
 
 const HomePage = () => {
@@ -49,7 +54,23 @@ const HomePage = () => {
 };
 
 const MealContainer = () => {
-  return <div className="flex justify-center">meal container</div>;
+  const meals = useRecoilValue(CurrentUserMeals);
+  return (
+    <div className="flex flex-col justify-center items-center">
+      <h1>meal container</h1>
+      <ol>
+        {meals.map((el) => {
+          return (
+            <li key={el.id} className="flex">
+              <p className="mr-4">{el.title}</p>
+              <p className="mr-4">{el.isCheat ? "yes" : "no"}</p>
+              <p className="mr-4">{el.date.toLocaleString()}</p>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
 };
 
 export default HomePage;

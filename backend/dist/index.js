@@ -114,7 +114,12 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         console.log(response);
         const passResponse = yield checkPassword(password, response === null || response === void 0 ? void 0 : response.password);
         if (passResponse) {
-            const token = jsonwebtoken_1.default.sign({ username: response.username, email: response.email }, JWT_SECRET);
+            const User = {
+                username: response.username,
+                email: response.email,
+                id: response.id,
+            };
+            const token = jsonwebtoken_1.default.sign(User, JWT_SECRET);
             res.json({ token });
         }
         else {
@@ -127,6 +132,19 @@ app.post("/login", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 }));
 app.use(extractToken_1.default);
 app.use(verifyToken_1.default);
+app.post("/meals", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const meals = yield prisma.cheatMeal.findMany({
+            where: {
+                userId: req.user.id,
+            },
+        });
+        res.json({ msg: meals });
+    }
+    catch (err) {
+        res.status(500).json({ msg: err });
+    }
+}));
 app.post("/me", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.json({ user: req.user });
 }));

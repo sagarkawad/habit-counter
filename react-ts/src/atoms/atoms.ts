@@ -27,6 +27,20 @@ interface User {
   // add other properties as needed
 }
 
+interface Meal {
+  data: {
+    msg: [
+      {
+        id: number;
+        title: string;
+        isCheat: boolean;
+        date: Date;
+        userId: number;
+      }
+    ];
+  };
+}
+
 export const CurrentUserName = selector({
   key: "CurrentUserName",
   get: async () => {
@@ -41,6 +55,27 @@ export const CurrentUserName = selector({
         }
       );
       return response.data.user;
+    } catch (error) {
+      throw error; // Optionally, handle the error in a way that suits your application
+    }
+  },
+});
+
+export const CurrentUserMeals = selector({
+  key: "CurrentUserMeals",
+  get: async () => {
+    try {
+      const response: Meal = await axios.post(
+        "http://localhost:3000/meals",
+        null,
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      console.log(response);
+      return response.data.msg;
     } catch (error) {
       throw error; // Optionally, handle the error in a way that suits your application
     }

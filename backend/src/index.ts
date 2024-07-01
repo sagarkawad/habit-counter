@@ -117,14 +117,18 @@ app.post("/login", async (req: Request, res: Response) => {
 
     const passResponse = await checkPassword(password, response?.password);
     if (passResponse) {
-      interface User {
+      interface UserSchema {
         username: string;
         email: string;
+        id: number;
       }
-      const token = jwt.sign(
-        { username: response.username, email: response.email },
-        JWT_SECRET
-      );
+
+      const User: UserSchema = {
+        username: response.username,
+        email: response.email,
+        id: response.id,
+      };
+      const token = jwt.sign(User, JWT_SECRET);
       res.json({ token });
     } else {
       res.json({ msg: "incorrect password" });
@@ -136,6 +140,19 @@ app.post("/login", async (req: Request, res: Response) => {
 
 app.use(extractToken);
 app.use(verifyToken);
+
+app.post("/meals", async (req: Request, res: Response) => {
+  try {
+    const meals = await prisma.cheatMeal.findMany({
+      where: {
+        userId: req.user.id,
+      },
+    });
+    res.json({ msg: meals });
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
 
 app.post("/me", async (req: Request, res: Response) => {
   res.json({ user: req.user });
