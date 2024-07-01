@@ -22,12 +22,7 @@ const MealPage = () => {
   const token = useRecoilValue(UserToken);
 
   async function sendDataHandler() {
-    // data: {
-    //   title: req.body.title,
-    //   isCheat: req.body.isCheat,
-    //   userId: user.id,
-    //   date: new Date(req.body.date),
-    // }
+   
     const response = await axios.post(
       "http://localhost:3000/add",
       {

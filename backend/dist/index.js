@@ -131,14 +131,12 @@ app.post("/me", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.json({ user: req.user });
 }));
 app.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //   if (!req.token) {
-    //     res.json({ msg: "no token found!" });
-    //   }
-    const user = yield prisma.user.findFirst({
+    const User = {
         where: {
             username: req.user.username,
         },
-    });
+    };
+    const user = yield prisma.user.findFirst(User);
     if (!user) {
         res.json({ msg: "user does not exists" });
         return;

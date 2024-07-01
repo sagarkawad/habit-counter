@@ -142,15 +142,19 @@ app.post("/me", async (req: Request, res: Response) => {
 });
 
 app.post("/add", async (req: Request, res: Response) => {
-  //   if (!req.token) {
-  //     res.json({ msg: "no token found!" });
-  //   }
+  interface UserSchema {
+    where: {
+      username: string;
+    };
+  }
 
-  const user = await prisma.user.findFirst({
+  const User: UserSchema = {
     where: {
       username: req.user.username,
     },
-  });
+  };
+
+  const user = await prisma.user.findFirst(User);
 
   if (!user) {
     res.json({ msg: "user does not exists" });
