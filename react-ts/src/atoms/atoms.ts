@@ -14,7 +14,7 @@ export const UserDetailsLogin = atom({
 
 export const UserToken = atom({
   key: "UserToken",
-  default: localStorage.getItem("authToken"),
+  default: `Bearer ${localStorage.getItem("authToken")}`,
 });
 
 interface User {

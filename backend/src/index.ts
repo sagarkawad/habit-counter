@@ -148,7 +148,7 @@ app.post("/add", async (req: Request, res: Response) => {
 
   const user = await prisma.user.findFirst({
     where: {
-      username: req.user,
+      username: req.user.username,
     },
   });
 
@@ -168,7 +168,7 @@ app.post("/add", async (req: Request, res: Response) => {
     });
     res.json({ msg: response });
   } catch (err) {
-    res.json({ msg: err });
+    res.status(401).json({ msg: err });
   }
 });
 

@@ -136,7 +136,7 @@ app.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //   }
     const user = yield prisma.user.findFirst({
         where: {
-            username: req.user,
+            username: req.user.username,
         },
     });
     if (!user) {
@@ -155,7 +155,7 @@ app.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json({ msg: response });
     }
     catch (err) {
-        res.json({ msg: err });
+        res.status(401).json({ msg: err });
     }
 }));
 app.post("/edit", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
