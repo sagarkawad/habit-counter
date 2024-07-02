@@ -1,5 +1,11 @@
-import { SelectDate, UserToken, SelectedMeal } from "@/atoms/atoms";
-import React from "react";
+import {
+  SelectDate,
+  UserToken,
+  SelectedMeal,
+  CurrentUserMeals,
+  fetchTrigger,
+} from "@/atoms/atoms";
+import { useTransition } from "react";
 import axios from "axios";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
@@ -21,8 +27,10 @@ const MealPage = () => {
   const selectedMeal = useRecoilValue(SelectedMeal);
   const token = useRecoilValue(UserToken);
 
+
+  //interfaces and types
+
   async function sendDataHandler() {
-   
     const response = await axios.post(
       "http://localhost:3000/add",
       {
@@ -37,16 +45,22 @@ const MealPage = () => {
         },
       }
     );
-
-    console.log(response);
   }
+
+ 
 
   return (
     <div>
       <h1>Add a meal for {stringifiedDate}</h1>
       <DropDown />
       <RadioSection />
-      <Button onClick={() => sendDataHandler()}>Add</Button>
+      <Button
+        onClick={() => {
+          sendDataHandler();
+        }}
+      >
+        Add
+      </Button>
     </div>
   );
 };

@@ -61,9 +61,19 @@ export const CurrentUserName = selector({
   },
 });
 
+export const FetchTrigger = atom({
+  key: "fetchTrigger",
+  default: 0,
+});
+
 export const CurrentUserMeals = selector({
   key: "CurrentUserMeals",
-  get: async () => {
+  get: async ({ get }) => {
+    const trigger = get(FetchTrigger);
+
+    // Simulate delay with setTimeout
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     try {
       const response: Meal = await axios.post(
         "http://localhost:3000/meals",
