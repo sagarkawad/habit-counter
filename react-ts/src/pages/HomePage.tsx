@@ -23,7 +23,7 @@ const HomePage = () => {
 
   useEffect(() => {
     setFetchTrigger((prev) => prev + 1);
-  }, []);
+  }, [date]);
 
   const navigate = useNavigate();
 
