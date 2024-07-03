@@ -18,14 +18,13 @@ const HomePage = () => {
     console.log(localStorage.getItem("authToken"));
   }
 
+  const [date, setDate] = useRecoilState<Date | undefined>(SelectDate);
   const setFetchTrigger = useSetRecoilState(FetchTrigger);
 
   useEffect(() => {
     setFetchTrigger((prev) => prev + 1);
   }, []);
 
-  const currentUser = useRecoilValue(CurrentUserName);
-  const [date, setDate] = useRecoilState<Date | undefined>(SelectDate);
   const navigate = useNavigate();
 
   console.log(date);
@@ -49,7 +48,7 @@ const HomePage = () => {
         <h1>
           Welcome back,{" "}
           <React.Suspense fallback={<p>Loading...</p>}>
-            <b> {currentUser ? currentUser.username : null} </b>
+            <CurrentUserComponent />
           </React.Suspense>
         </h1>
 
@@ -71,6 +70,11 @@ const HomePage = () => {
       </React.Suspense>
     </section>
   );
+};
+
+const CurrentUserComponent = () => {
+  const currentUser = useRecoilValue(CurrentUserName);
+  return <b> {currentUser ? currentUser.username : null} </b>;
 };
 
 const MealContainer = ({ children }: { children: any }) => {

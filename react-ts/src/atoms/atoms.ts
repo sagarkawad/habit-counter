@@ -53,7 +53,7 @@ export const FetchTrigger = atom({
 export const CurrentUserName = selector({
   key: "CurrentUserName",
   get: async ({ get }) => {
-    // const trigger = get(FetchTrigger);
+    const trigger = get(FetchTrigger);
     try {
       const response: User = await axios.post(
         "http://localhost:3000/me",
