@@ -20,12 +20,15 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const MealPage = () => {
   const [date, setDate] = useRecoilState(SelectDate);
   const selectedMeal = useRecoilValue(SelectedMeal);
   const token = useRecoilValue(UserToken);
   const isCheatMeal = useRecoilValue(CheatMeal);
+
+  const navigate = useNavigate();
 
   console.log(isCheatMeal);
 
@@ -58,18 +61,30 @@ const MealPage = () => {
     alert("meal successfully added!");
   }
 
+  function navigationHandler() {
+    navigate("/");
+  }
+
   return (
-    <div>
-      <h1>Add a meal for {date ? date.toLocaleDateString() : "---"}</h1>
+    <div className="flex flex-col justify-center items-center h-screen">
+      <h1 className="bold text-xl mb-4">
+        Add a meal for {date ? date.toLocaleDateString() : "---"}
+      </h1>
       <DropDown />
       <RadioSection />
-      <Button
-        onClick={() => {
-          sendDataHandler();
-        }}
-      >
-        Add
-      </Button>
+      <div className="flex ">
+        <Button
+          onClick={() => {
+            sendDataHandler();
+          }}
+          className="w-40 mr-4"
+        >
+          Add
+        </Button>
+        <Button onClick={navigationHandler} className="w-40">
+          Go to HomePage
+        </Button>
+      </div>
     </div>
   );
 };
@@ -80,10 +95,12 @@ const DropDown = () => {
 
   return (
     <DropdownMenu>
-      <h2>Add the details for : </h2>
-      <DropdownMenuTrigger>
-        {selectedMeal || "Select a Meal"}
-      </DropdownMenuTrigger>
+      <div className="flex">
+        <h2>Add the details for - </h2>{" "}
+        <DropdownMenuTrigger>
+          {selectedMeal || "Select a Meal"}
+        </DropdownMenuTrigger>
+      </div>
       <DropdownMenuContent>
         {Meals.map((el) => (
           //@ts-ignore
@@ -106,29 +123,26 @@ const RadioSection = () => {
   const [isCheatMeal, setIsCheatMeal] = useRecoilState(CheatMeal);
 
   //@ts-ignore
-  const handleRadioChange = (event) => {
-    setIsCheatMeal(event.target.value === "option-one");
+  const handleRadioChange = (e) => {
+    setIsCheatMeal(e === "option-one" ? true : false);
+    console.log("val: ", e);
+    console.log("inside handle radio change");
+    console.log("cm - ", isCheatMeal);
   };
 
-  console.log("cm - ", isCheatMeal);
-
   return (
-    <RadioGroup defaultValue="option-one">
+    <RadioGroup
+      defaultValue="option-one"
+      onValueChange={(e) => handleRadioChange(e)}
+      className="my-8"
+    >
       <div className="flex items-center space-x-2">
-        <RadioGroupItem
-          value="option-one"
-          id="option-one"
-          onChange={(e) => handleRadioChange(e)}
-        />
-        <Label htmlFor="option-one">Is a Cheat Meal</Label>
+        <RadioGroupItem value="option-one" id="option-one" />
+        <Label htmlFor="option-one">is a Cheat Meal</Label>
       </div>
       <div className="flex items-center space-x-2">
-        <RadioGroupItem
-          value="option-two"
-          id="option-two"
-          onChange={(e) => handleRadioChange(e)}
-        />
-        <Label htmlFor="option-two">Is not a Cheat Meal</Label>
+        <RadioGroupItem value="option-two" id="option-two" />
+        <Label htmlFor="option-two">is not a Cheat Meal</Label>
       </div>
     </RadioGroup>
   );

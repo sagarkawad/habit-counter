@@ -46,14 +46,19 @@ interface Meal {
 }
 
 export const FetchTrigger = atom({
-  key: "fetchTrigger",
+  key: "FetchTrigger",
+  default: 0,
+});
+
+export const FetchTriggerUser = atom({
+  key: "FetchTriggerUser",
   default: 0,
 });
 
 export const CurrentUserName = selector({
   key: "CurrentUserName",
   get: async ({ get }) => {
-    const trigger = get(FetchTrigger);
+    const trigger = get(FetchTriggerUser);
     try {
       const response: User = await axios.post(
         "http://localhost:3000/me",

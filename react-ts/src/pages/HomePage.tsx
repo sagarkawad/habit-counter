@@ -8,8 +8,19 @@ import {
   SelectDate,
   CurrentUserMeals,
   FetchTrigger,
+  FetchTriggerUser,
   UserDetailsLogin,
 } from "@/atoms/atoms";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
 import { Calendar } from "@/components/ui/calendar";
 
 const HomePage = () => {
@@ -20,10 +31,15 @@ const HomePage = () => {
 
   const [date, setDate] = useRecoilState<Date | undefined>(SelectDate);
   const setFetchTrigger = useSetRecoilState(FetchTrigger);
+  const setFetchTriggerForUser = useSetRecoilState(FetchTriggerUser);
 
   useEffect(() => {
     setFetchTrigger((prev) => prev + 1);
   }, [date]);
+
+  useEffect(() => {
+    setFetchTriggerForUser((prev) => prev + 1);
+  }, []);
 
   const navigate = useNavigate();
 
@@ -79,30 +95,51 @@ const CurrentUserComponent = () => {
 
 const MealContainer = ({ children }: { children: any }) => {
   return (
-    <div className="flex flex-col justify-center items-center">
-      <h1>meal container</h1>
-
-      {children}
-    </div>
+    <div className="flex flex-col justify-center items-center">{children}</div>
   );
 };
 
 const AllMeals = () => {
   const meals = useRecoilValue(CurrentUserMeals);
   return (
-    <ol>
-      {meals.map((el) => {
-        return (
-          <li key={el.id} className="flex">
-            <p className="mr-4">{el.title}</p>
-            <p className="mr-4">{el.isCheat ? "Cheated" : "Not Cheated"}</p>
-            <p className="mr-4">
-              {new Date(el.date).toLocaleDateString("en-CA")}
-            </p>
-          </li>
-        );
-      })}
-    </ol>
+    <Table>
+      <TableCaption>A list of your meals.</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[100px]">Meal Type</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead className="text-right">Date</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {meals.map((el) => {
+          return (
+            <TableRow>
+              <TableCell className="font-medium">{el.title}</TableCell>
+              <TableCell>{el.isCheat ? "Cheated" : "Not Cheated"}</TableCell>
+              <TableCell className="text-right">
+                {" "}
+                {new Date(el.date).toLocaleDateString("en-CA")}
+              </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
+
+    // <ol>
+    //   {meals.map((el) => {
+    //     return (
+    //       <li key={el.id} className="flex">
+    //         <p className="mr-4">{el.title}</p>
+    //         <p className="mr-4">{el.isCheat ? "Cheated" : "Not Cheated"}</p>
+    //         <p className="mr-4">
+    //           {new Date(el.date).toLocaleDateString("en-CA")}
+    //         </p>
+    //       </li>
+    //     );
+    //   })}
+    // </ol>
   );
 };
 
