@@ -95,7 +95,7 @@ const AllMeals = () => {
         return (
           <li key={el.id} className="flex">
             <p className="mr-4">{el.title}</p>
-            <p className="mr-4">{el.isCheat ? "yes" : "no"}</p>
+            <p className="mr-4">{el.isCheat ? "Cheated" : "Not Cheated"}</p>
             <p className="mr-4">
               {new Date(el.date).toLocaleDateString("en-CA")}
             </p>

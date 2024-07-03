@@ -110,3 +110,8 @@ export const SelectedMeal = atom({
   key: "SelectedMeal",
   default: undefined,
 });
+
+export const CheatMeal = atom({
+  key: "CheatMeal",
+  default: true,
+});

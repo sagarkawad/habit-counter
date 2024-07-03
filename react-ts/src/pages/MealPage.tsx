@@ -4,8 +4,9 @@ import {
   SelectedMeal,
   CurrentUserMeals,
   fetchTrigger,
+  CheatMeal,
 } from "@/atoms/atoms";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import axios from "axios";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
@@ -22,14 +23,20 @@ import { Button } from "@/components/ui/button";
 
 const MealPage = () => {
   const [date, setDate] = useRecoilState(SelectDate);
-  const stringifiedDate =
-    date?.toLocaleDateString() || new Date().toLocaleDateString();
   const selectedMeal = useRecoilValue(SelectedMeal);
   const token = useRecoilValue(UserToken);
+  const isCheatMeal = useRecoilValue(CheatMeal);
+
+  console.log(isCheatMeal);
 
   //interfaces and types
 
   async function sendDataHandler() {
+    if (date === undefined) {
+      alert("go to homepage and select a date");
+      return;
+    }
+
     if (selectedMeal === undefined) {
       alert("please select a meal");
       return;
@@ -38,7 +45,7 @@ const MealPage = () => {
       "http://localhost:3000/add",
       {
         title: selectedMeal,
-        isCheat: false,
+        isCheat: isCheatMeal,
         //@ts-ignore
         date: new Date(date),
       },
@@ -53,7 +60,7 @@ const MealPage = () => {
 
   return (
     <div>
-      <h1>Add a meal for {stringifiedDate}</h1>
+      <h1>Add a meal for {date ? date.toLocaleDateString() : "---"}</h1>
       <DropDown />
       <RadioSection />
       <Button
@@ -83,6 +90,7 @@ const DropDown = () => {
           <DropdownMenuItem
             key={el}
             onClick={() => {
+              //@ts-ignore
               setSelectedMeal(el);
             }}
           >
@@ -95,14 +103,31 @@ const DropDown = () => {
 };
 
 const RadioSection = () => {
+  const [isCheatMeal, setIsCheatMeal] = useRecoilState(CheatMeal);
+
+  //@ts-ignore
+  const handleRadioChange = (event) => {
+    setIsCheatMeal(event.target.value === "option-one");
+  };
+
+  console.log("cm - ", isCheatMeal);
+
   return (
     <RadioGroup defaultValue="option-one">
       <div className="flex items-center space-x-2">
-        <RadioGroupItem value="option-one" id="option-one" />
+        <RadioGroupItem
+          value="option-one"
+          id="option-one"
+          onChange={(e) => handleRadioChange(e)}
+        />
         <Label htmlFor="option-one">Is a Cheat Meal</Label>
       </div>
       <div className="flex items-center space-x-2">
-        <RadioGroupItem value="option-two" id="option-two" />
+        <RadioGroupItem
+          value="option-two"
+          id="option-two"
+          onChange={(e) => handleRadioChange(e)}
+        />
         <Label htmlFor="option-two">Is not a Cheat Meal</Label>
       </div>
     </RadioGroup>
