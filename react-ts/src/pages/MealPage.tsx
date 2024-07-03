@@ -25,7 +25,6 @@ import { useNavigate } from "react-router-dom";
 const MealPage = () => {
   const [date, setDate] = useRecoilState(SelectDate);
   const selectedMeal = useRecoilValue(SelectedMeal);
-  const token = useRecoilValue(UserToken);
   const isCheatMeal = useRecoilValue(CheatMeal);
 
   const navigate = useNavigate();
@@ -54,7 +53,7 @@ const MealPage = () => {
       },
       {
         headers: {
-          authorization: token,
+          authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       }
     );
