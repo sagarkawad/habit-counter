@@ -59,11 +59,11 @@ const HomePage = () => {
   }
 
   return (
-    <section className="p-4">
-      <div className="flex justify-around mb-4">
+    <section className="px-4">
+      <div className="flex justify-around mb-10  border-b border-slate-300 items-center py-2">
         <h1>
           Welcome back,{" "}
-          <React.Suspense fallback={<p>Loading...</p>}>
+          <React.Suspense fallback={<b>Loading...</b>}>
             <CurrentUserComponent />
           </React.Suspense>
         </h1>
