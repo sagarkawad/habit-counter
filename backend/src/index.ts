@@ -146,6 +146,7 @@ app.post("/meals", async (req: Request, res: Response) => {
     const meals = await prisma.cheatMeal.findMany({
       where: {
         userId: req.user.id,
+        date: req.body.date,
       },
     });
     res.json({ msg: meals });

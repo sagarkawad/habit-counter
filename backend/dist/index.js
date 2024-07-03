@@ -137,6 +137,7 @@ app.post("/meals", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const meals = yield prisma.cheatMeal.findMany({
             where: {
                 userId: req.user.id,
+                date: req.body.date,
             },
         });
         res.json({ msg: meals });

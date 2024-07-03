@@ -12,6 +12,8 @@ import MealPage from "./pages/MealPage.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 
+import { ErrorBoundary } from "react-error-boundary";
+
 const router = createBrowserRouter([
   {
     path: "/register",
@@ -23,7 +25,17 @@ const router = createBrowserRouter([
   },
   {
     path: "/",
-    element: <HomePage />,
+    element: (
+      // <ErrorBoundary
+      //   fallback={
+      //     <p className="p-4">
+      //       Something went wrong! Try refreshing the Page...
+      //     </p>
+      //   }
+      // >
+      <HomePage />
+      /* </ErrorBoundary> */
+    ),
   },
   {
     path: "/meal",

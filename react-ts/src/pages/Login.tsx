@@ -11,11 +11,10 @@ import { UserDetailsLogin, UserToken } from "@/atoms/atoms";
 
 const Login = () => {
   const [userLogin, setUserLogin] = useRecoilState(UserDetailsLogin);
-  const [token, setToken] = useRecoilState(UserToken);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (token) {
+    if (localStorage.getItem("authToken")) {
       console.log("you are already logged in");
       alert("you are already logged in");
       navigate("/");
@@ -31,7 +30,9 @@ const Login = () => {
       console.log(response);
       console.log(response.data.token);
       localStorage.setItem("authToken", response.data.token);
-      setToken(response.data.token);
+      setUserLogin((prev) => {
+        return { ...prev, password: "" };
+      });
       navigate("/");
     } catch (err) {
       console.log("err: ", err);
@@ -45,6 +46,7 @@ const Login = () => {
         <Input
           type="email"
           id="email"
+          value={userLogin.username}
           placeholder="Email / UserName"
           onChange={(e) => {
             setUserLogin((prev) => {
@@ -57,6 +59,7 @@ const Login = () => {
         <Label htmlFor="pass">Password</Label>
         <Input
           type="password"
+          value={userLogin.password}
           id="pass"
           placeholder="Password"
           onChange={(e) => {

@@ -23,6 +23,9 @@ const Register = () => {
         password: user.password,
       });
       console.log(response);
+      setUser((prev) => {
+        return { ...prev, password: "" };
+      });
       navigate("/login");
     } catch (err) {
       console.log("error: ", err);
@@ -36,11 +39,11 @@ const Register = () => {
         <Input
           type="email"
           id="email"
+          value={user.email}
           placeholder="Email"
           onChange={(e) =>
             setUser((prev) => ({ ...prev, email: e.target.value }))
           }
-          value={user.email}
         />
       </div>
       <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
@@ -48,16 +51,17 @@ const Register = () => {
         <Input
           type="text"
           id="text"
+          value={user.username}
           placeholder="Username"
           onChange={(e) =>
             setUser((prev) => ({ ...prev, username: e.target.value }))
           }
-          value={user.username}
         />
       </div>
       <div className="grid w-full max-w-sm items-center gap-1.5 mb-4">
         <Label htmlFor="pass">Password</Label>
         <Input
+          value={user.password}
           type="password"
           id="pass"
           placeholder="Password"
@@ -66,7 +70,6 @@ const Register = () => {
               return { ...prev, password: e.target.value };
             })
           }
-          value={user.password}
         />
       </div>
       <Button onClick={createUser}>Register</Button>

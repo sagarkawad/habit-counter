@@ -14,7 +14,11 @@ export const UserDetailsLogin = atom({
 
 export const UserToken = atom({
   key: "UserToken",
-  default: `Bearer ${localStorage.getItem("authToken")}`,
+  default: `${
+    localStorage.getItem("authToken")
+      ? `Bearer ${localStorage.getItem("authToken")}`
+      : null
+  }`,
 });
 
 interface User {
@@ -41,9 +45,15 @@ interface Meal {
   };
 }
 
+export const FetchTrigger = atom({
+  key: "fetchTrigger",
+  default: 0,
+});
+
 export const CurrentUserName = selector({
   key: "CurrentUserName",
-  get: async () => {
+  get: async ({ get }) => {
+    // const trigger = get(FetchTrigger);
     try {
       const response: User = await axios.post(
         "http://localhost:3000/me",
@@ -55,15 +65,12 @@ export const CurrentUserName = selector({
         }
       );
       return response.data.user;
+      // return undefined;
     } catch (error) {
-      throw error; // Optionally, handle the error in a way that suits your application
+      return undefined;
+      //throw error; // Optionally, handle the error in a way that suits your application
     }
   },
-});
-
-export const FetchTrigger = atom({
-  key: "fetchTrigger",
-  default: 0,
 });
 
 export const CurrentUserMeals = selector({
@@ -72,12 +79,14 @@ export const CurrentUserMeals = selector({
     const trigger = get(FetchTrigger);
 
     // Simulate delay with setTimeout
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     try {
       const response: Meal = await axios.post(
         "http://localhost:3000/meals",
-        null,
+        {
+          date: get(SelectDate),
+        },
         {
           headers: {
             authorization: `Bearer ${localStorage.getItem("authToken")}`,
@@ -94,10 +103,10 @@ export const CurrentUserMeals = selector({
 
 export const SelectDate = atom<Date | undefined>({
   key: "SelectDate",
-  default: new Date(),
+  default: undefined,
 });
 
 export const SelectedMeal = atom({
   key: "SelectedMeal",
-  default: "Select a Meal",
+  default: undefined,
 });

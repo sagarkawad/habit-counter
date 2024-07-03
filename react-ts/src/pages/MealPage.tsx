@@ -27,10 +27,13 @@ const MealPage = () => {
   const selectedMeal = useRecoilValue(SelectedMeal);
   const token = useRecoilValue(UserToken);
 
-
   //interfaces and types
 
   async function sendDataHandler() {
+    if (selectedMeal === undefined) {
+      alert("please select a meal");
+      return;
+    }
     const response = await axios.post(
       "http://localhost:3000/add",
       {
@@ -45,9 +48,8 @@ const MealPage = () => {
         },
       }
     );
+    alert("meal successfully added!");
   }
-
- 
 
   return (
     <div>
@@ -72,7 +74,9 @@ const DropDown = () => {
   return (
     <DropdownMenu>
       <h2>Add the details for : </h2>
-      <DropdownMenuTrigger>{selectedMeal}</DropdownMenuTrigger>
+      <DropdownMenuTrigger>
+        {selectedMeal || "Select a Meal"}
+      </DropdownMenuTrigger>
       <DropdownMenuContent>
         {Meals.map((el) => (
           //@ts-ignore
