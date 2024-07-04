@@ -26,15 +26,15 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      // <ErrorBoundary
-      //   fallback={
-      //     <p className="p-4">
-      //       Something went wrong! Try refreshing the Page...
-      //     </p>
-      //   }
-      // >
-      <HomePage />
-      /* </ErrorBoundary> */
+      <ErrorBoundary
+        fallback={
+          <p className="p-4">
+            Something went wrong! Try refreshing the Page...
+          </p>
+        }
+      >
+        <HomePage />
+      </ErrorBoundary>
     ),
   },
   {
