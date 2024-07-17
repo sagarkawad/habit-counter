@@ -155,6 +155,26 @@ app.post("/meals", async (req: Request, res: Response) => {
   }
 });
 
+app.post("/mealsbydate", async (req: Request, res: Response) => {
+  try {
+    const { startDate, endDate } = req.body;
+
+    const meals = await prisma.cheatMeal.findMany({
+      where: {
+        userId: req.user.id,
+        // date: {
+        //   gte: new Date(startDate),
+        //   lte: new Date(endDate),
+        // },
+      },
+    });
+
+    res.json({ msg: meals });
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+});
+
 app.post("/me", async (req: Request, res: Response) => {
   res.json({ user: req.user });
 });

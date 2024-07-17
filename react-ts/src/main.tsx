@@ -8,6 +8,7 @@ import Register from "./pages/Register.tsx";
 import Login from "./pages/Login.tsx";
 import HomePage from "./pages/HomePage.tsx";
 import MealPage from "./pages/MealPage.tsx";
+import AnalyticsPage from "./pages/AnalyticsPage.tsx";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { RecoilRoot } from "recoil";
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
   {
     path: "/meal",
     element: <MealPage />,
+  },
+  {
+    path: "/analytics",
+    element: <AnalyticsPage />,
   },
 ]);
 

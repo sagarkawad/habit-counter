@@ -146,6 +146,24 @@ app.post("/meals", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(500).json({ msg: err });
     }
 }));
+app.post("/mealsbydate", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { startDate, endDate } = req.body;
+        const meals = yield prisma.cheatMeal.findMany({
+            where: {
+                userId: req.user.id,
+                // date: {
+                //   gte: new Date(startDate),
+                //   lte: new Date(endDate),
+                // },
+            },
+        });
+        res.json({ msg: meals });
+    }
+    catch (err) {
+        res.status(500).json({ msg: err });
+    }
+}));
 app.post("/me", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.json({ user: req.user });
 }));

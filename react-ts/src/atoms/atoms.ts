@@ -106,6 +106,58 @@ export const CurrentUserMeals = selector({
   },
 });
 
+import { addDays } from "date-fns";
+import { DateRange } from "react-day-picker";
+
+export const DateRangeAtom = atom<DateRange | undefined>({
+  key: "DateRangeAtom",
+  default: {
+    from: new Date(),
+    to: addDays(new Date(), 20),
+  },
+});
+
+export const CurrentUserMealsByDate = selector({
+  key: "CurrentUserMealsByDate",
+  get: async ({ get }) => {
+    // const trigger = get(FetchTrigger);
+
+    // Simulate delay with setTimeout
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    try {
+      const response: Meal = await axios.post(
+        "http://localhost:3000/mealsbydate",
+        {
+          startDate: get(DateRangeAtom)?.to,
+          endDate: get(DateRangeAtom)?.from,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      console.log(response);
+      let isCheat = 0;
+      let isNotCheat = 0;
+      response.data.msg.map((el) => {
+        if (el.isCheat) {
+          isCheat++;
+        } else {
+          isNotCheat++;
+        }
+      });
+      return {
+        isCheat,
+        isNotCheat,
+      };
+    } catch (error) {
+      throw error; // Optionally, handle the error in a way that suits your application
+    }
+  },
+});
+
 export const SelectDate = atom<Date | undefined>({
   key: "SelectDate",
   default: undefined,
