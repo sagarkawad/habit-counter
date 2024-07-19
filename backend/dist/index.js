@@ -149,15 +149,25 @@ app.post("/meals", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 app.post("/mealsbydate", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { startDate, endDate } = req.body;
-        const meals = yield prisma.cheatMeal.findMany({
-            where: {
-                userId: req.user.id,
-                // date: {
-                //   gte: new Date(startDate),
-                //   lte: new Date(endDate),
-                // },
-            },
-        });
+        let meals;
+        if (startDate === undefined || endDate === undefined) {
+            meals = yield prisma.cheatMeal.findMany({
+                where: {
+                    userId: req.user.id,
+                },
+            });
+        }
+        else {
+            meals = yield prisma.cheatMeal.findMany({
+                where: {
+                    userId: req.user.id,
+                    date: {
+                        gte: startDate,
+                        lte: endDate,
+                    },
+                },
+            });
+        }
         res.json({ msg: meals });
     }
     catch (err) {

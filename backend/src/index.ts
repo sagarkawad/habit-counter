@@ -11,6 +11,7 @@ import { z } from "zod";
 const app = express();
 
 import { PrismaClient } from "@prisma/client";
+import e from "express";
 const prisma = new PrismaClient();
 
 app.use(cors());
@@ -159,16 +160,25 @@ app.post("/mealsbydate", async (req: Request, res: Response) => {
   try {
     const { startDate, endDate } = req.body;
 
-    const meals = await prisma.cheatMeal.findMany({
-      where: {
-        userId: req.user.id,
-        // date: {
-        //   gte: new Date(startDate),
-        //   lte: new Date(endDate),
-        // },
-      },
-    });
+    let meals;
 
+    if (startDate === undefined || endDate === undefined) {
+      meals = await prisma.cheatMeal.findMany({
+        where: {
+          userId: req.user.id,
+        },
+      });
+    } else {
+      meals = await prisma.cheatMeal.findMany({
+        where: {
+          userId: req.user.id,
+          date: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+    }
     res.json({ msg: meals });
   } catch (err) {
     res.status(500).json({ msg: err });

@@ -83,9 +83,6 @@ export const CurrentUserMeals = selector({
   get: async ({ get }) => {
     const trigger = get(FetchTrigger);
 
-    // Simulate delay with setTimeout
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-
     try {
       const response: Meal = await axios.post(
         "http://localhost:3000/meals",
@@ -106,31 +103,25 @@ export const CurrentUserMeals = selector({
   },
 });
 
-import { addDays } from "date-fns";
-import { DateRange } from "react-day-picker";
+export const StartDateRange = atom<Date | undefined>({
+  key: "StartDateRange",
+  default: undefined,
+});
 
-export const DateRangeAtom = atom<DateRange | undefined>({
-  key: "DateRangeAtom",
-  default: {
-    from: new Date(),
-    to: addDays(new Date(), 20),
-  },
+export const EndDateRange = atom<Date | undefined>({
+  key: "EndDateRange",
+  default: undefined,
 });
 
 export const CurrentUserMealsByDate = selector({
   key: "CurrentUserMealsByDate",
   get: async ({ get }) => {
-    // const trigger = get(FetchTrigger);
-
-    // Simulate delay with setTimeout
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-
     try {
       const response: Meal = await axios.post(
         "http://localhost:3000/mealsbydate",
         {
-          startDate: get(DateRangeAtom)?.to,
-          endDate: get(DateRangeAtom)?.from,
+          startDate: get(StartDateRange),
+          endDate: get(EndDateRange),
         },
         {
           headers: {
@@ -139,6 +130,8 @@ export const CurrentUserMealsByDate = selector({
         }
       );
       console.log(response);
+      console.log(get(StartDateRange));
+      console.log(get(EndDateRange));
       let isCheat = 0;
       let isNotCheat = 0;
       response.data.msg.map((el) => {

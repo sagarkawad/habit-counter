@@ -1,17 +1,26 @@
 import React from "react";
-import { DatePickerWithRange } from "@/components/ui/date-picker-with-range";
+import {
+  DatePickerWithRange,
+  StartDateRangeComponent,
+} from "@/components/ui/start-date-range";
 import DoughNut from "@/components/ui/doughnut";
-import { CurrentUserMealsByDate } from "@/atoms/atoms";
+import {
+  CurrentUserMealsByDate,
+  EndDateRange,
+  StartDateRange,
+} from "@/atoms/atoms";
 import { useRecoilValue } from "recoil";
+import { EndDateRangeComponent } from "@/components/ui/end-date-range";
 
 const AnalyticsPage = () => {
   //   const mealsByDate = useRecoilValue(CurrentUserMealsByDate);
   return (
     <div className="flex flex-col justify-center items-center">
       <h1>AnalyticsPage</h1>
-      <React.Suspense fallback={<b>Loading...</b>}>
-        <DatePickerWithRange />
-      </React.Suspense>
+
+      <StartDateRangeComponent />
+      <EndDateRangeComponent />
+
       <DoughNut />
       <React.Suspense fallback={<b>Loading...</b>}>
         <CheatCounter />
